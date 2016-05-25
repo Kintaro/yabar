@@ -23,7 +23,7 @@ enum {
  *Setup correct properties for a bar's window.
  */
 static void ya_setup_ewmh(ya_bar_t *bar) {
-	// I really hope I understood this correctly from lemonbar code :| 
+	// I really hope I understood this correctly from lemonbar code :|
 	const char *atom_names[] = {
 		"_NET_WM_WINDOW_TYPE",
 		"_NET_WM_WINDOW_TYPE_DOCK",
@@ -79,7 +79,7 @@ static void ya_setup_ewmh(ya_bar_t *bar) {
 void ya_create_block(ya_block_t *blk) {
 	ya_block_t *tmpblk;
 	if (blk->bar->curblk[blk->align]) {
-		blk->bar->curblk[blk->align]->next_blk = blk;	
+		blk->bar->curblk[blk->align]->next_blk = blk;
 		blk->prev_blk = blk->bar->curblk[blk->align];
 	}
 	switch (blk->align) {
@@ -94,7 +94,7 @@ void ya_create_block(ya_block_t *blk) {
 				for(;tmpblk->prev_blk; tmpblk = tmpblk->prev_blk);
 				tmpblk->shift = (blk->bar->width - blk->bar->occupied_width[A_CENTER])/2;
 				for(tmpblk = tmpblk->next_blk; tmpblk; tmpblk = tmpblk->next_blk) {
-					tmpblk->shift = tmpblk->prev_blk->shift + tmpblk->prev_blk->width + blk->bar->slack;	
+					tmpblk->shift = tmpblk->prev_blk->shift + tmpblk->prev_blk->width + blk->bar->slack;
 				}
 			}
 			else {
@@ -109,7 +109,7 @@ void ya_create_block(ya_block_t *blk) {
 				for(; tmpblk; tmpblk = tmpblk->prev_blk) {
 					tmpblk->shift -= (blk->width + blk->bar->slack);
 				}
-		
+
 			}
 			break;
 	}
@@ -138,7 +138,7 @@ void ya_create_bar(ya_bar_t * bar) {
 	int x=0, y=0;
 	if ((ya.gen_flag & GEN_RANDR))
 		x = bar->hgap + bar->mon->pos.x - bar->brsize;
-	else 
+	else
 		x = bar->hgap - bar->brsize;
 	switch(bar->position){
 		case YA_TOP:{
@@ -147,7 +147,7 @@ void ya_create_bar(ya_bar_t * bar) {
 			else
 				y = bar->vgap;
 			break;
-		} 
+		}
 		case YA_BOTTOM: {
 			if ((ya.gen_flag & GEN_RANDR))
 				y = bar->mon->pos.height - bar->vgap - bar->height - 2*bar->brsize;
@@ -156,8 +156,8 @@ void ya_create_bar(ya_bar_t * bar) {
 			break;
 		}
 	}
-	uint32_t w_mask = XCB_CW_BACK_PIXEL | XCB_CW_BORDER_PIXEL | XCB_CW_EVENT_MASK | XCB_CW_COLORMAP;
-	uint32_t w_val[] = {bar->bgcolor, bar->brcolor, XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_BUTTON_PRESS, ya.colormap};
+	uint32_t w_mask = XCB_CW_BACK_PIXEL | XCB_CW_BORDER_PIXEL | XCB_CW_OVERRIDE_REDIRECT | XCB_CW_EVENT_MASK | XCB_CW_COLORMAP;
+	uint32_t w_val[] = {bar->bgcolor, bar->brcolor, true, XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_BUTTON_PRESS, ya.colormap};
 	xcb_create_window(ya.c,
 			ya.depth,
 			bar->win,
@@ -205,7 +205,7 @@ void ya_draw_pango_text(struct ya_block *blk) {
 	if((blk->attr & BLKA_ICON)) {
 		cairo_surface_t *iconsrf = ya_draw_graphics(blk);
 		if (iconsrf) {
-			//Copy a newly created temporary surface that contains the scaled image to our surface and then 
+			//Copy a newly created temporary surface that contains the scaled image to our surface and then
 			//destroy that temporary surface and return to our normal cairo scale.
 			cairo_scale(cr, blk->img->scale_w, blk->img->scale_h);
 			cairo_set_source_surface(cr, iconsrf,
@@ -221,8 +221,8 @@ void ya_draw_pango_text(struct ya_block *blk) {
 	PangoLayout *layout = pango_layout_new(context);
 	pango_layout_set_font_description(layout, blk->bar->desc);
 
-	cairo_set_source_rgba(cr, 
-			GET_RED(blk->fgcolor), 
+	cairo_set_source_rgba(cr,
+			GET_RED(blk->fgcolor),
 			GET_BLUE(blk->fgcolor),
 			GET_GREEN(blk->fgcolor),
 			GET_ALPHA(blk->fgcolor));
@@ -249,7 +249,7 @@ void ya_draw_pango_text(struct ya_block *blk) {
 	//Get the width that text can be drawn comfortably and put it in curwidth member.
 	pango_layout_get_pixel_size(layout, &blk->curwidth, &ht);
 	if(SHOULD_REDRAW(blk)) {
-		//Now if the bar should be redrawn due to a modified text width, we free pango and cairo memory and then do 
+		//Now if the bar should be redrawn due to a modified text width, we free pango and cairo memory and then do
 		//a total redraw for the bar.
 		xcb_flush(ya.c);
 		g_object_unref(layout);
@@ -262,7 +262,7 @@ void ya_draw_pango_text(struct ya_block *blk) {
 #else
 	int wd, ht;
 	pango_layout_get_pixel_size(layout, &wd, &ht);
-#endif 
+#endif
 
 	pango_layout_set_width(layout, blk->width * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD);
@@ -274,8 +274,8 @@ void ya_draw_pango_text(struct ya_block *blk) {
 
 	//Draw overline if defined
 	if(blk->attr & BLKA_OVERLINE) {
-		cairo_set_source_rgba(cr, 
-			GET_RED(blk->olcolor), 
+		cairo_set_source_rgba(cr,
+			GET_RED(blk->olcolor),
 			GET_BLUE(blk->olcolor),
 			GET_GREEN(blk->olcolor),
 			GET_ALPHA(blk->olcolor));
@@ -284,8 +284,8 @@ void ya_draw_pango_text(struct ya_block *blk) {
 	}
 	//Draw underline if defined
 	if(blk->attr & BLKA_UNDERLINE) {
-		cairo_set_source_rgba(cr, 
-			GET_RED(blk->ulcolor), 
+		cairo_set_source_rgba(cr,
+			GET_RED(blk->ulcolor),
 			GET_BLUE(blk->ulcolor),
 			GET_GREEN(blk->ulcolor),
 			GET_ALPHA(blk->ulcolor));
@@ -296,7 +296,7 @@ void ya_draw_pango_text(struct ya_block *blk) {
 	cairo_surface_flush(surface);
 	xcb_copy_area(ya.c, blk->pixmap, blk->bar->win, blk->gc, 0,0,blk->shift, 0, blk->width, blk->bar->height);
 	xcb_flush(ya.c);
-	
+
 	g_object_unref(layout);
 	g_object_unref(context);
 	cairo_destroy(cr);
@@ -320,7 +320,7 @@ void ya_handle_button( xcb_button_press_event_t *eb) {
 						}
 					}
 				}
-			}	
+			}
 			//If block button not found or not defined, execute button for bar(if defined).
 			//We reach this path only if function has not yet returned because no blk has been found.
 			if(curbar->button_cmd[eb->detail-1]) {
@@ -338,7 +338,7 @@ void ya_handle_button( xcb_button_press_event_t *eb) {
 }
 
 /*
- * Parse color(background, foreground, underline and overline) 
+ * Parse color(background, foreground, underline and overline)
  * from text buffer and then relocate start of designated text to strbuf member.
  */
 #ifdef YA_DYN_COL
@@ -524,7 +524,7 @@ void ya_redraw_bar(ya_bar_t *bar) {
 						blk->bgcolor_old = col;
 					}
 				}
-#else 
+#else
 				if(!(blk->attr & BLKA_BGCOLOR)) {
 					blk->bgcolor = col;
 					xcb_change_gc(ya.c, blk->gc, XCB_GC_FOREGROUND, (const uint32_t[]){col});
